@@ -1,6 +1,5 @@
 #include "global.h"
 
-								  
 u32 KEY0_count = 0;//按键0
 u8 KEY0_first_state = 0;
 u8 KEY0_down_state = 0;
@@ -56,6 +55,10 @@ s8 ReadKeyValue(void)
 			KEY0_first_state = 1;
 			KEY0_count = 0;
 		}
+		else
+		{
+			goto labelKey1;
+		}
 	}
 	
 	if (KEY0_first_state == 1 && KEY0_count > 20)
@@ -89,7 +92,10 @@ s8 ReadKeyValue(void)
 		Keyvalue = 0;
 		return Keyvalue;		
 	}
+
 	//-------------------------------------------------------------------------//
+
+	labelKey1:
 	//按键1的去抖读取
 	if((KEY1_first_state == 0) && (KEY1_down_state == 0) && (KEY1_up_state == 0))
 	{
@@ -97,6 +103,10 @@ s8 ReadKeyValue(void)
 		{
 			KEY1_first_state = 1;
 			KEY1_count = 0;
+		}
+		else
+		{
+			goto labelKey2;
 		}
 	}
 	
@@ -132,13 +142,19 @@ s8 ReadKeyValue(void)
 		return Keyvalue;		
 	}
 	//-------------------------------------------------------------------------//
-		//按键2的去抖读取
+	
+	labelKey2:
+	//按键2的去抖读取
 	if((KEY2_first_state == 0) && (KEY2_down_state == 0) && (KEY2_up_state == 0))
 	{
 		if (!KEY2)
 		{
 			KEY2_first_state = 1;
 			KEY2_count = 0;
+		}
+		else
+		{
+			return -1;
 		}
 	}
 	
@@ -173,25 +189,31 @@ s8 ReadKeyValue(void)
 		Keyvalue = 2;
 		return Keyvalue;		
 	}
-	
+
 	return -1;	
 }
 
 void KEY0_Action(void)
 {
-	Dac1_Add_Val(10);
+	//Dac1_Add_Val(10);
+	printf("key0\n");
+	startNewWrite();
 	return;
 }
 
 void KEY1_Action(void)
 {
-	Dac1_Sub_Val(10);
+	//Dac1_Sub_Val(10);
+	printf("key1\n");
+	finishFileWrite();
 	return;
 }
 
 void KEY2_Action(void)
 {
+	printf("key2\n");
 	usb_printf("usb test\n");
+	startReadFile();
 	return;
 }
 

@@ -84,6 +84,21 @@ u32 getDelayTimerCount(u32 startTimerCount)
 	}
 }
 
+void mainWhileCountPerSec(void)
+{
+	static u32 mainWhileCount = 0;
+	static u32 currentCount = 0;
+	
+	mainWhileCount++;
+	if((getCurrentTimerCount() - currentCount) >= 1000)
+	{
+		printf("mC:%d\n", mainWhileCount);
+		mainWhileCount = 0;
+		currentCount = getCurrentTimerCount();
+	}
+	
+}
+
 
 
 

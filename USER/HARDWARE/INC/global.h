@@ -14,10 +14,12 @@
 #include "timer.h"
 #include "key.h"
 #include "dac.h"
+#include "spi.h"
 
 #include "usb_lib.h"
 #include "hw_config.h"
 #include "usb_pwr.h"
+#include "w25qxx.h"
 
 
 

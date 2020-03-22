@@ -39,6 +39,9 @@ void DMA1_Channel1_IRQHandler(void)
 	   if(DMA_GetITStatus(DMA1_IT_TC1)!=RESET)
 		 {	                                
          DMA_ClearITPendingBit(DMA1_IT_TC1);
+				 
+			   selectAdcChannelToWriteInDmairq();
+			 
 				 for(i = 0; i < ADC_CHANNEL_COUNT; i++)
 				 {
 						ADC_Value[ADCBufCount] = ADC_ConvertedValue[i];

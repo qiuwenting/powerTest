@@ -335,10 +335,10 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
+              <MiscControls>--C99</MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\LIBRARY\CORE;..\LIBRARY\STM32F10x_FWLib\inc;..\USER\HARDWARE\INC;..\USER;..\USER\DEVICES\KEY;..\USER\DEVICES\LCD;..\USER\DEVICES\LED;..\USER\DEVICES\USB\CONFIG;..\USER\DEVICES\USB\STM32_USB-FS-Device_Driver\inc</IncludePath>
+              <IncludePath>..\LIBRARY\CORE;..\LIBRARY\STM32F10x_FWLib\inc;..\USER\HARDWARE\INC;..\USER;..\USER\DEVICES\KEY;..\USER\DEVICES\LCD;..\USER\DEVICES\LED;..\USER\DEVICES\USB\CONFIG;..\USER\DEVICES\USB\STM32_USB-FS-Device_Driver\inc;..\USER\DEVICES\W25QXX</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -397,6 +397,11 @@
               <FileType>1</FileType>
               <FilePath>..\USER\system_stm32f10x.c</FilePath>
             </File>
+            <File>
+              <FileName>app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\app.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -436,6 +441,11 @@
               <FileName>usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\USER\HARDWARE\SRC\usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\HARDWARE\SRC\spi.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -541,6 +551,11 @@
               <FileName>led.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\USER\DEVICES\LED\led.c</FilePath>
+            </File>
+            <File>
+              <FileName>w25qxx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\DEVICES\W25QXX\w25qxx.c</FilePath>
             </File>
           </Files>
         </Group>

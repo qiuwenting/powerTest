@@ -1,10 +1,17 @@
 #include "global.h"
 
 
+
 volatile u16 ADC_ConvertedValue[ADC_CHANNEL_COUNT];			//ADC采样的数据
 volatile u16 ADCBufCount = 0;
 volatile u16 ADC_Value[ADC_BUF_LEN];
-volatile u8 fullFlag = 0;		 
+volatile u8 fullFlag = 0;
+
+volatile u16 ADCValueBuf1[ADCBUFSIZE];
+volatile u16 ADCValueBuf2[ADCBUFSIZE];
+volatile u8 readBuffer = 0;
+volatile u8 writeBuffer = 1;
+
 		 
 void ADC_GPIO_Init()
 {
@@ -115,4 +122,96 @@ void VoltagePrint(void)
 	}
 	
 }
+
+void VoltageIntervalPrint(void)
+{
+		const u32 interval = 1000;//ms
+		static u32 startCount = 0;
+		u32 channel1Voltage, channel2Voltage, channel3Voltage, channel10Voltage, DacVal = 0, DacVol;
+		
+	  if((getCurrentTimerCount() - startCount) >= interval)
+		{
+			DacVal = DAC_GetDataOutputValue(DAC_Channel_1);
+			DacVol = DacVal * 3300 / 4096;
+			
+			#ifdef DEBUG_BOARD
+			DacVol = DacVol * 43 / 10;
+			#endif
+			
+			channel1Voltage = ADC_Value[0] * 3300 / ADC_ROUND / 4096;
+			channel2Voltage = ADC_Value[1] * 3300 / ADC_ROUND / 4096;
+			channel3Voltage = ADC_Value[2] * 3300 / ADC_ROUND / 4096;
+			channel10Voltage = ADC_Value[3] * 3300 / ADC_ROUND / 4096;
+				
+			printf("DacSetV:%d; DacV:%d; V1:%d; V2:%d; V3:%d\n", DacVol, channel10Voltage, channel1Voltage, channel2Voltage, channel3Voltage);
+			startCount = getCurrentTimerCount();
+		}
+			
+		return;
+}
+
+
+
+u8 isAdcValid(u16 adcVal)
+{
+		u8 ret = 0;
+		if(adcVal > 100 && adcVal < 4000)
+		{
+			ret = 1;
+		}
+		return ret;
+}
+
+void selectAdcChannelToWriteInDmairq(void)
+{
+	static u32 i = 0;
+	if(writeBuffer == 1)
+	{
+			if(isAdcValid(ADC_ConvertedValue[0]))
+			{
+				ADCValueBuf1[i] = ADC_ConvertedValue[0];
+			}
+			else if(isAdcValid(ADC_ConvertedValue[1]))
+			{
+				ADCValueBuf1[i] = ADC_ConvertedValue[1];
+			}
+			else if(isAdcValid(ADC_ConvertedValue[2]))
+			{
+				ADCValueBuf1[i] = ADC_ConvertedValue[2];
+			}
+			i++;
+			if(i >= ADCBUFSIZE)
+			{
+				i = 0;
+				writeBuffer = 2;
+				readBuffer = 1;
+				printf("dma write1\n");
+			}
+	}
+	else if(writeBuffer == 2)
+	{
+			if(isAdcValid(ADC_ConvertedValue[0]))
+			{
+				ADCValueBuf2[i] = ADC_ConvertedValue[0];
+			}
+			else if(isAdcValid(ADC_ConvertedValue[1]))
+			{
+				ADCValueBuf2[i] = ADC_ConvertedValue[1];
+			}
+			else if(isAdcValid(ADC_ConvertedValue[2]))
+			{
+				ADCValueBuf2[i] = ADC_ConvertedValue[2];
+			}
+			i++;
+			if(i >= ADCBUFSIZE)
+			{
+				i = 0;
+				writeBuffer = 1;
+				readBuffer = 2;
+				printf("dma write2\n");
+			}
+	}
+	
+}
+
 
